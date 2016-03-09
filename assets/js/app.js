@@ -8,8 +8,8 @@
 
 $(function() {
 
-    /** Focus the message input when we've loaded the page, So users can just start chatting! **/
-    $('#message').focus();
+    /** Focus the message input when we"ve loaded the page, So users can just start chatting! **/
+    $("#message").focus();
 
     /**
      * Initialize Socket.io :) this is the secret sauce to the entire app!
@@ -36,17 +36,17 @@ $(function() {
     /**
      * When the form is submitted, We will want to show the users message on the screen :)
      */
-    $('form').submit(function (e) {
+    $("form").submit(function (e) {
         /** Prevent the form from submitting **/
         e.preventDefault();
 
         /** Check if the input actually has stuff in it (EG/ not just a bunch of spaces) **/
         if (0 !== $("#message").val().trim().length) {
             /** Let the app know we want to send the message **/
-            socket.emit('sendchat', $('#message').val());
+            socket.emit("sendchat", $("#message").val());
 
             /** Clear the input **/
-            $('#message').val('');
+            $("#message").val("");
         }
 
         /** Always return false **/
@@ -56,8 +56,8 @@ $(function() {
     /**
      * The app will tell us when to update the view (Socket.io) and it will also give us the data to put there.
      */
-    socket.on('updatechat', function (msg) {
-        $('#messageContainer').append(htmlBeginning + escapeHtml(msg) + htmlEnding);
+    socket.on("updatechat", function (msg) {
+        $("#messageContainer").append(htmlBeginning + escapeHtml(msg) + htmlEnding);
     });
 
     /**
