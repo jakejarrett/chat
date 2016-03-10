@@ -45,6 +45,9 @@ $(function() {
             /** Let the app know we want to send the message **/
             socket.emit("sendchat", $("#message").val());
 
+            /** Scroll to the bottom of the chat ~ **/
+            $("html, body").animate({ scrollTop: $(document).height() }, "slow");
+
             /** Clear the input **/
             $("#message").val("");
         }
