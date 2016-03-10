@@ -113,7 +113,9 @@ img {
     bottom: 0;
 }
 
-.button-full-width {
+.chat-submit-button {
+    height: 100%;
+    min-height: 54px;
     width: 100%;
 }
 
