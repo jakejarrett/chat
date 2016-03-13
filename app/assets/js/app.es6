@@ -3,9 +3,13 @@
  *
  * @Author - Jake Jarrett
  * @GitHub URL - https://github.com/jakejarrett/chat-example
+ *
+ * TODO- Convert to ES6 Modules
  */
 
 "use strict";
+
+import $ from "jquery";
 
 $(function() {
 
