@@ -88,7 +88,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
                     /** Show the App for the new user! **/
                     _variables.landingPage.remove();
-                    (0, _jquery2.default)(".error").remove();
                     _variables.app.show();
                 }
             });

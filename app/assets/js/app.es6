@@ -73,7 +73,6 @@ $(function() {
 
                     /** Show the App for the new user! **/
                     landingPage.remove();
-                    $(".error").remove();
                     app.show();
                 }
             });
