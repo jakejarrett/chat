@@ -37,6 +37,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     /** Focus the message input when we"ve loaded the page, So users can just start chatting! **/
     _variables.messageInput.focus();
 
+    /** We don't want unregistered users seeing the chat. So we will disable chat until they register **/
     if (!sessionStorage.user) {
         var registered = false;
     }
@@ -52,16 +53,24 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         }
 
         _variables.usernameRegistrationForm.submit(function (event) {
-            event.preventDefault();
-            socket.emit("newUser", (0, _jquery2.default)("#username").val());
+            /** Because we use this selector more than once, lets set it as a variable **/
+            var username = (0, _jquery2.default)("#username").val().trim();
 
-            /** Store Username in session **/
-            sessionStorage.user = (0, _jquery2.default)("#username").val();
-            registered = true;
+            /** It would be silly to let someone use spaces as their name. **/
+            if (0 !== username) {
+                /** Prevent the form from submitting **/
+                event.preventDefault();
+                /** Notify the chat that there is a new user **/
+                socket.emit("newUser", username);
 
-            /** Show the App for the new user! **/
-            _variables.landingPage.remove();
-            _variables.app.show();
+                /** Store Username in session **/
+                sessionStorage.user = username;
+                registered = true;
+
+                /** Show the App for the new user! **/
+                _variables.landingPage.remove();
+                _variables.app.show();
+            }
         });
     });
 
@@ -93,9 +102,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     /**
      * The app will tell us when to update the view (Socket.io) and it will also give us the data to put there.
      */
-    socket.on("updatechat", function (msg) {
+    socket.on("updatechat", function (username, msg) {
         if (registered) {
-            messaging.newMessage(msg);
+            messaging.newMessage(username, msg);
         }
     });
 
@@ -204,8 +213,8 @@ function sendMessage(event) {
     return false;
 }
 
-function newMessage(message, username) {
-    _variables.messageContainer.append(_variables.htmlBeginning + (0, _htmlEscape2.default)(message).replace(/\n/g, "<br />") + _variables.htmlEnding);
+function newMessage(username, message) {
+    _variables.messageContainer.append(_variables.htmlBeginning + "<small>" + (0, _htmlEscape2.default)(username) + "</small><br />" + (0, _htmlEscape2.default)(message).replace(/\n/g, "<br />") + _variables.htmlEnding);
 
     /** Scroll to the bottom of the chat ~ **/
     (0, _jquery2.default)("html, body").animate({ scrollTop: (0, _jquery2.default)(document).height() });

@@ -34,8 +34,8 @@ export function sendMessage(event) {
     return false;
 }
 
-export function newMessage(message, username) {
-    messageContainer.append(htmlBeginning + escapeHtml(message).replace(/\n/g, "<br />") + htmlEnding);
+export function newMessage(username, message) {
+    messageContainer.append(htmlBeginning + "<small>" + escapeHtml(username) + "</small><br />" + escapeHtml(message).replace(/\n/g, "<br />") + htmlEnding);
 
     /** Scroll to the bottom of the chat ~ **/
     $("html, body").animate({ scrollTop: $(document).height() });

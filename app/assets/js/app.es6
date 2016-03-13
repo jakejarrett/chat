@@ -22,6 +22,7 @@ $(function() {
     /** Focus the message input when we"ve loaded the page, So users can just start chatting! **/
     messageInput.focus();
 
+    /** We don't want unregistered users seeing the chat. So we will disable chat until they register **/
     if(!sessionStorage.user) {
         var registered = false;
     }
@@ -37,16 +38,24 @@ $(function() {
         }
 
         usernameRegistrationForm.submit(function(event){
-            event.preventDefault();
-            socket.emit("newUser", $("#username").val());
+            /** Because we use this selector more than once, lets set it as a variable **/
+            let username = $("#username").val().trim();
 
-            /** Store Username in session **/
-            sessionStorage.user = $("#username").val();
-            registered = true;
+            /** It would be silly to let someone use spaces as their name. **/
+            if(0 !== username) {
+                /** Prevent the form from submitting **/
+                event.preventDefault();
+                /** Notify the chat that there is a new user **/
+                socket.emit("newUser", username);
 
-            /** Show the App for the new user! **/
-            landingPage.remove();
-            app.show();
+                /** Store Username in session **/
+                sessionStorage.user = username;
+                registered = true;
+
+                /** Show the App for the new user! **/
+                landingPage.remove();
+                app.show();
+            }
         });
     });
 
@@ -78,9 +87,9 @@ $(function() {
     /**
      * The app will tell us when to update the view (Socket.io) and it will also give us the data to put there.
      */
-    socket.on("updatechat", function (msg) {
+    socket.on("updatechat", function (username, msg) {
         if(registered) {
-            messaging.newMessage(msg);
+            messaging.newMessage(username, msg);
         }
     });
 

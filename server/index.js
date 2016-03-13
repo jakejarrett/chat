@@ -26,8 +26,8 @@ io.on("connection", function(socket){
     /**
      * When the "sendchat" event has triggered, Lets update the chat view!
      */
-    socket.on("sendchat", function(msg){
-        io.emit("updatechat", msg);
+    socket.on("sendchat", function(msg, username){
+        io.emit("updatechat", username, msg);
     });
 
     /**
