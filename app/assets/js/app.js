@@ -3,7 +3,7 @@
  * Chat Application
  *
  * @Author - Jake Jarrett
- * @GitHub URL - https://github.com/jakejarrett/chat-example
+ * @GitHub URL - https://github.com/jakejarrett/chat
  */
 
 "use strict";
@@ -50,6 +50,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
         if (!registered) {
             (0, _jquery2.default)("#username").focus();
         }
+
         _variables.usernameRegistrationForm.submit(function (event) {
             event.preventDefault();
             socket.emit("newUser", (0, _jquery2.default)("#username").val());

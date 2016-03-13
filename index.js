@@ -2,7 +2,7 @@
  * Chat Application
  *
  * @Author - Jake Jarrett
- * @GitHub URL - https://github.com/jakejarrett/chat-example
+ * @GitHub URL - https://github.com/jakejarrett/chat
  *
  */
 
