@@ -4,8 +4,6 @@
  *
  * @Author - Jake Jarrett
  * @GitHub URL - https://github.com/jakejarrett/chat-example
- *
- * TODO- Convert to ES6 Modules
  */
 
 "use strict";
@@ -21,104 +19,74 @@ var _jquery = require("jquery");
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _htmlEscape = require("./lib/htmlEscape");
-
-var _htmlEscape2 = _interopRequireDefault(_htmlEscape);
-
 var _notifications = require("./lib/notifications");
 
 var _notifications2 = _interopRequireDefault(_notifications);
 
+var _variables = require("./lib/messaging/variables");
+
+var _messaging = require("./lib/messaging");
+
+var messaging = _interopRequireWildcard(_messaging);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 (0, _jquery2.default)(function () {
+    /** Focus the message input when we"ve loaded the page, So users can just start chatting! **/
+    _variables.messageInput.focus();
 
-  /** Setup App's variables **/
-  var messageInput = (0, _jquery2.default)("#message");
+    /**
+     * Initialize Socket.io :) this is the secret sauce to the entire app!
+     */
+    var socket = io();
 
-  /** Focus the message input when we"ve loaded the page, So users can just start chatting! **/
-  messageInput.focus();
-
-  /**
-   * Initialize Socket.io :) this is the secret sauce to the entire app!
-   */
-  var socket = io();
-
-  /**
-   * HTML strings for beginning and ending of each message
-   * @type {string}
-   */
-  var htmlBeginning = "<div class='row msg_container base_sent'><div class='col-md-10 col-xs-10'><div class='messages msg_sent'>";
-  var htmlEnding = "</div></div></div>";
-
-  /**
-   * When the form is submitted, We will want to show the users message on the screen :)
-   */
-  (0, _jquery2.default)("form").submit(function (e) {
-    sendMessage(e);
-  });
-
-  /**
-   * When a user clicks Enter on the textarea, Lets instead make that send the message.
-   */
-  messageInput.keydown(function (event) {
-    if (event.keyCode == 13 && event.ctrlKey) {
-      event.preventDefault();
-      messageInput.val(messageInput.val() + "\n");
-    } else if (event.keyCode == 13 && !event.shiftKey) {
-      sendMessage(event);
-    }
-  });
-
-  /**
-   * The app will tell us when to update the view (Socket.io) and it will also give us the data to put there.
-   */
-  socket.on("updatechat", function (msg) {
-    (0, _jquery2.default)("#messageContainer").append(htmlBeginning + (0, _htmlEscape2.default)(msg).replace(/\n/g, "<br />") + htmlEnding);
-
-    /** Scroll to the bottom of the chat ~ **/
-    (0, _jquery2.default)("html, body").animate({ scrollTop: (0, _jquery2.default)(document).height() });
-
-    (0, _notifications2.default)("New Message", {
-      body: msg
+    socket.on("connect", function () {
+        socket.emit("newUser", "New User");
     });
-  });
 
-  /**
-   * Whenever the user clicks on the app, we'll automatically focus on the message input
-   *
-   * NOTE- this is only for development purposes right now, will be removed later.
-   */
-  (0, _jquery2.default)("html").on("click", function (e) {
-    messageInput.focus();
-  });
+    socket.on("newUser", function (user) {
+        messaging.newUser(user);
+    });
 
-  /**
-   * Send the message
-   *
-   * @param event
-   * @returns {boolean}
-   */
-  var sendMessage = function sendMessage(event) {
-    /** Prevent the form from submitting **/
-    event.preventDefault();
+    /**
+     * When the form is submitted, We will want to show the users message on the screen :)
+     */
+    (0, _jquery2.default)("form").submit(function (event) {
+        messaging.sendMessage(event);
+    });
 
-    /** Check if the input actually has stuff in it (EG/ not just a bunch of spaces) **/
-    if (0 !== messageInput.val().trim().length) {
-      console.log(messageInput.val());
-      /** Let the app know we want to send the message **/
-      socket.emit("sendchat", messageInput.val());
+    /**
+     * When a user clicks Enter on the textarea, Lets instead make that send the message.
+     */
+    _variables.messageInput.keydown(function (event) {
+        if (event.keyCode == 13 && event.ctrlKey) {
+            event.preventDefault();
+            _variables.messageInput.val(_variables.messageInput.val() + "\n");
+        } else if (event.keyCode == 13 && !event.shiftKey) {
+            messaging.sendMessage(event);
+        }
+    });
 
-      /** Clear the input **/
-      messageInput.val("");
-    }
+    /**
+     * The app will tell us when to update the view (Socket.io) and it will also give us the data to put there.
+     */
+    socket.on("updatechat", function (msg) {
+        messaging.newMessage(msg);
+    });
 
-    /** Always return false **/
-    return false;
-  };
+    /**
+     * Whenever the user clicks on the app, we'll automatically focus on the message input
+     *
+     * NOTE- this is only for development purposes right now, will be removed later.
+     */
+    (0, _jquery2.default)("html").not(".messages").click(function (e) {
+        _variables.messageInput.focus();
+    });
 });
 
-},{"./lib/htmlEscape":2,"./lib/notifications":3,"jquery":4}],2:[function(require,module,exports){
+},{"./lib/messaging":3,"./lib/messaging/variables":4,"./lib/notifications":5,"jquery":6}],2:[function(require,module,exports){
 /**
  * Escape HTML
  *  We don't want a user to run random scripts in the page, so lets escape all messages.
@@ -155,6 +123,100 @@ exports.default = function (string) {
 };
 
 },{}],3:[function(require,module,exports){
+/**
+ * Messaging Module, Handles message events (EG/ New Message, Update Message, Delete Message & such)
+ *
+ * @param event
+ * @returns {boolean}
+ */
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.sendMessage = sendMessage;
+exports.newMessage = newMessage;
+exports.newUser = newUser;
+
+var _jquery = require("jquery");
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _variables = require("./variables");
+
+var _notifications = require("../notifications");
+
+var _notifications2 = _interopRequireDefault(_notifications);
+
+var _htmlEscape = require("../htmlEscape");
+
+var _htmlEscape2 = _interopRequireDefault(_htmlEscape);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Give our functions access to socket!
+ */
+var socket = io();
+
+function sendMessage(event) {
+    /** Prevent the form from submitting **/
+    event.preventDefault();
+
+    /** Check if the input actually has stuff in it (EG/ not just a bunch of spaces) **/
+    if (0 !== _variables.messageInput.val().trim().length) {
+
+        /** Let the app know we want to send the message **/
+        socket.emit("sendchat", _variables.messageInput.val());
+
+        /** Clear the input **/
+        _variables.messageInput.val("");
+    }
+
+    /** Always return false **/
+    return false;
+}
+
+function newMessage(message) {
+    _variables.messageContainer.append(_variables.htmlBeginning + (0, _htmlEscape2.default)(message).replace(/\n/g, "<br />") + _variables.htmlEnding);
+
+    /** Scroll to the bottom of the chat ~ **/
+    (0, _jquery2.default)("html, body").animate({ scrollTop: (0, _jquery2.default)(document).height() });
+
+    (0, _notifications2.default)("New Message", {
+        body: message
+    });
+}
+
+function newUser(user) {
+    console.log("new user has joined the chat");
+
+    _variables.messageContainer.append("<div class='row msg_container base_new_user'><div class='col-md-10 col-xs-10'><div class='messages new_user'>" + user + " has joined the chat</div></div></div>");
+
+    (0, _jquery2.default)("html, body").animate({ scrollTop: (0, _jquery2.default)(document).height() });
+}
+
+},{"../htmlEscape":2,"../notifications":5,"./variables":4,"jquery":6}],4:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.htmlEnding = exports.htmlBeginning = exports.messageContainer = exports.messageInput = undefined;
+
+var _jquery = require("jquery");
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/** Setup Messaging variables **/
+var messageInput = exports.messageInput = (0, _jquery2.default)("#message");
+var messageContainer = exports.messageContainer = (0, _jquery2.default)("#messageContainer");
+var htmlBeginning = exports.htmlBeginning = "<div class='row msg_container base_sent'><div class='col-md-10 col-xs-10'><div class='messages msg_sent'>";
+var htmlEnding = exports.htmlEnding = "</div></div></div>";
+
+},{"jquery":6}],5:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -194,7 +256,7 @@ exports.default = function (title, options) {
    * @returns {boolean}
    */
 
-},{}],4:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.1
  * http://jquery.com/

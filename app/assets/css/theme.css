@@ -68,6 +68,12 @@ img {
     justify-content: flex-end;
     align-items: flex-end;
 }
+
+.base_new_user {
+    justify-content: center;
+    align-items: center;
+}
+
 .base_sent > .avatar:after {
     content: "";
     position: absolute;

@@ -30,6 +30,10 @@ io.on("connection", function(socket){
     socket.on("sendchat", function(msg){
         io.emit("updatechat", msg);
     });
+
+    socket.on("newUser", function(user) {
+        io.emit("newUser", user);
+    })
 });
 
 /**
