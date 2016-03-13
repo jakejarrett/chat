@@ -6,7 +6,8 @@
     "bootstrap": "^3.3.6",
     "express": "4.10.2",
     "jquery": "^2.2.1",
-    "socket.io": "^1.2.0"
+    "socket.io": "^1.2.0",
+    "socket.io-client": "^1.4.5"
   },
   "build": "babel src -d lib",
   "devDependencies": {

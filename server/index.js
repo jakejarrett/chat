@@ -16,19 +16,43 @@ app.get("/", function(req, res){
     res.sendFile(appPath + "/index.html");
 });
 
+/** Users currently connected **/
+var usernames = {};
+
 /** When socket.io detects a connection **/
 io.on("connection", function(socket){
     /** Core Functionality **/
-
-    /**
-     * TODO- Add User functionality (EG/ @jake)
-     */
 
     /**
      * When the "sendchat" event has triggered, Lets update the chat view!
      */
     socket.on("sendchat", function(msg){
         io.emit("updatechat", msg);
+    });
+
+    /**
+     * When a new user joins the chat, Lets store the entered username into sessionStorage and notify the users
+     * the user has joined!
+     */
+    socket.on("newUser", function(username) {
+        socket.username = username;
+
+        usernames[username] = socket.id;
+
+        /** store username **/
+        sessionStorage.user = username;
+
+        /** notify chat **/
+        io.emit("newUser", username);
+    });
+
+    socket.on('disconnect', function(){
+        // remove the username from global usernames list
+        delete usernames[socket.username];
+        // update list of users in chat, client-side
+        io.sockets.emit('updateusers', usernames);
+        // echo globally that this client has left
+        socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has disconnected');
     });
 });
 
