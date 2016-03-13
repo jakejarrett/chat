@@ -7,7 +7,7 @@
 "use strict";
 
 import $ from "jquery";
-import {messageInput, messageContainer, htmlBeginning, htmlEnding} from "./variables";
+import {messageInput, messageContainer, username, htmlBeginning, htmlEnding} from "./variables";
 import notifyUser from "../notifications";
 import escapeHtml from "../htmlEscape";
 
@@ -24,7 +24,7 @@ export function sendMessage(event) {
     if (0 !== messageInput.val().trim().length) {
 
         /** Let the app know we want to send the message **/
-        socket.emit("sendchat", messageInput.val());
+        socket.emit("sendchat", messageInput.val(), username);
 
         /** Clear the input **/
         messageInput.val("");
@@ -34,21 +34,18 @@ export function sendMessage(event) {
     return false;
 }
 
-export function newMessage(message) {
+export function newMessage(message, username) {
     messageContainer.append(htmlBeginning + escapeHtml(message).replace(/\n/g, "<br />") + htmlEnding);
 
     /** Scroll to the bottom of the chat ~ **/
     $("html, body").animate({ scrollTop: $(document).height() });
 
-    notifyUser("New Message", {
+    notifyUser("Message from" + username, {
         body: message
     });
 }
 
 export function newUser(user) {
-    console.log("new user has joined the chat");
-
-    messageContainer.append(`<div class='row msg_container base_new_user'><div class='col-md-10 col-xs-10'><div class='messages new_user'>${user} has joined the chat</div></div></div>`);
-
+    messageContainer.append(`<div class='row msg_container base_new_user'><div class='col-md-6 col-xs-6'><div class='messages new_user'>${user} has joined the chat</div></div></div>`);
     $("html, body").animate({ scrollTop: $(document).height() });
 }

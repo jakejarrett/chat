@@ -15,30 +15,51 @@
  */
 import $ from "jquery";
 import notifyUser from "./lib/notifications";
-import {messageInput, messageContainer} from "./lib/messaging/variables"
+import {app, messageInput, messageContainer, usernameRegistrationForm, landingPage} from "./lib/messaging/variables"
 import * as messaging from "./lib/messaging";
 
 $(function() {
     /** Focus the message input when we"ve loaded the page, So users can just start chatting! **/
     messageInput.focus();
 
+    if(!sessionStorage.user) {
+        var registered = false;
+    }
+
     /**
      * Initialize Socket.io :) this is the secret sauce to the entire app!
      */
     var socket = io();
 
-    socket.on("connect", function(){
-        socket.emit("newUser", "New User");
+    socket.on("connect", function() {
+        if(!registered) {
+            $("#username").focus();
+        }
+
+        usernameRegistrationForm.submit(function(event){
+            event.preventDefault();
+            socket.emit("newUser", $("#username").val());
+
+            /** Store Username in session **/
+            sessionStorage.user = $("#username").val();
+            registered = true;
+
+            /** Show the App for the new user! **/
+            landingPage.remove();
+            app.show();
+        });
     });
 
     socket.on("newUser", function(user) {
-        messaging.newUser(user);
+        if(registered) {
+            messaging.newUser(user);
+        }
     });
 
     /**
      * When the form is submitted, We will want to show the users message on the screen :)
      */
-    $("form").submit(function (event) {
+    $("form#submit-message").submit(function (event) {
         messaging.sendMessage(event);
     });
 
@@ -58,7 +79,9 @@ $(function() {
      * The app will tell us when to update the view (Socket.io) and it will also give us the data to put there.
      */
     socket.on("updatechat", function (msg) {
-        messaging.newMessage(msg);
+        if(registered) {
+            messaging.newMessage(msg);
+        }
     });
 
     /**
@@ -67,6 +90,10 @@ $(function() {
      * NOTE- this is only for development purposes right now, will be removed later.
      */
     $("html").not(".messages").click(function (e) {
-        messageInput.focus();
+        if(registered) {
+            messageInput.focus();
+        } else {
+            $("#username").focus();
+        }
     });
 });

@@ -37,23 +37,43 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     /** Focus the message input when we"ve loaded the page, So users can just start chatting! **/
     _variables.messageInput.focus();
 
+    if (!sessionStorage.user) {
+        var registered = false;
+    }
+
     /**
      * Initialize Socket.io :) this is the secret sauce to the entire app!
      */
     var socket = io();
 
     socket.on("connect", function () {
-        socket.emit("newUser", "New User");
+        if (!registered) {
+            (0, _jquery2.default)("#username").focus();
+        }
+        _variables.usernameRegistrationForm.submit(function (event) {
+            event.preventDefault();
+            socket.emit("newUser", (0, _jquery2.default)("#username").val());
+
+            /** Store Username in session **/
+            sessionStorage.user = (0, _jquery2.default)("#username").val();
+            registered = true;
+
+            /** Show the App for the new user! **/
+            _variables.landingPage.remove();
+            _variables.app.show();
+        });
     });
 
     socket.on("newUser", function (user) {
-        messaging.newUser(user);
+        if (registered) {
+            messaging.newUser(user);
+        }
     });
 
     /**
      * When the form is submitted, We will want to show the users message on the screen :)
      */
-    (0, _jquery2.default)("form").submit(function (event) {
+    (0, _jquery2.default)("form#submit-message").submit(function (event) {
         messaging.sendMessage(event);
     });
 
@@ -73,7 +93,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
      * The app will tell us when to update the view (Socket.io) and it will also give us the data to put there.
      */
     socket.on("updatechat", function (msg) {
-        messaging.newMessage(msg);
+        if (registered) {
+            messaging.newMessage(msg);
+        }
     });
 
     /**
@@ -82,7 +104,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
      * NOTE- this is only for development purposes right now, will be removed later.
      */
     (0, _jquery2.default)("html").not(".messages").click(function (e) {
-        _variables.messageInput.focus();
+        if (registered) {
+            _variables.messageInput.focus();
+        } else {
+            (0, _jquery2.default)("#username").focus();
+        }
     });
 });
 
@@ -167,7 +193,7 @@ function sendMessage(event) {
     if (0 !== _variables.messageInput.val().trim().length) {
 
         /** Let the app know we want to send the message **/
-        socket.emit("sendchat", _variables.messageInput.val());
+        socket.emit("sendchat", _variables.messageInput.val(), _variables.username);
 
         /** Clear the input **/
         _variables.messageInput.val("");
@@ -177,22 +203,19 @@ function sendMessage(event) {
     return false;
 }
 
-function newMessage(message) {
+function newMessage(message, username) {
     _variables.messageContainer.append(_variables.htmlBeginning + (0, _htmlEscape2.default)(message).replace(/\n/g, "<br />") + _variables.htmlEnding);
 
     /** Scroll to the bottom of the chat ~ **/
     (0, _jquery2.default)("html, body").animate({ scrollTop: (0, _jquery2.default)(document).height() });
 
-    (0, _notifications2.default)("New Message", {
+    (0, _notifications2.default)("Message from" + username, {
         body: message
     });
 }
 
 function newUser(user) {
-    console.log("new user has joined the chat");
-
-    _variables.messageContainer.append("<div class='row msg_container base_new_user'><div class='col-md-10 col-xs-10'><div class='messages new_user'>" + user + " has joined the chat</div></div></div>");
-
+    _variables.messageContainer.append("<div class='row msg_container base_new_user'><div class='col-md-6 col-xs-6'><div class='messages new_user'>" + user + " has joined the chat</div></div></div>");
     (0, _jquery2.default)("html, body").animate({ scrollTop: (0, _jquery2.default)(document).height() });
 }
 
@@ -202,7 +225,7 @@ function newUser(user) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.htmlEnding = exports.htmlBeginning = exports.messageContainer = exports.messageInput = undefined;
+exports.htmlEnding = exports.htmlBeginning = exports.username = exports.usernameRegistrationForm = exports.messageContainer = exports.messageInput = exports.landingPage = exports.app = undefined;
 
 var _jquery = require("jquery");
 
@@ -211,8 +234,12 @@ var _jquery2 = _interopRequireDefault(_jquery);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /** Setup Messaging variables **/
+var app = exports.app = (0, _jquery2.default)(".app");
+var landingPage = exports.landingPage = (0, _jquery2.default)(".landing-page");
 var messageInput = exports.messageInput = (0, _jquery2.default)("#message");
 var messageContainer = exports.messageContainer = (0, _jquery2.default)("#messageContainer");
+var usernameRegistrationForm = exports.usernameRegistrationForm = (0, _jquery2.default)("form#landing-page-form");
+var username = exports.username = sessionStorage.user;
 var htmlBeginning = exports.htmlBeginning = "<div class='row msg_container base_sent'><div class='col-md-10 col-xs-10'><div class='messages msg_sent'>";
 var htmlEnding = exports.htmlEnding = "</div></div></div>";
 
