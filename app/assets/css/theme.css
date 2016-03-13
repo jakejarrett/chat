@@ -23,15 +23,16 @@ html, body {
 .msg_receive{
     padding-left:0;
     margin-left:0;
+    background: #FFFFFF;
 }
 
 .msg_sent{
     padding-bottom:10px !important;
     margin-right:0;
+    background: #ECEFF1;
 }
 
 .messages {
-    background: white;
     padding: 10px;
     border-radius: 2px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);

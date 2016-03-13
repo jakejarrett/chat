@@ -50,11 +50,11 @@ export function newMessage(message, username) {
 }
 
 export function newUser(author, user) {
-    messageContainer.append(`<div class="row msg_container base_new_user"><div class="col-md-6 col-xs-6"><div class="messages new_user"><small>${author}</small> <br /> ${user} has joined the chat</div></div></div>`);
+    messageContainer.append(`<div class="row msg_container base_new_user"><div class="col-md-8 col-xs-8"><div class="messages new_user"><small>${author}</small> <br /> ${user} has joined the chat</div></div></div>`);
     $("html, body").animate({ scrollTop: $(document).height() });
 }
 
 export function userDisconnect(author, user) {
-    messageContainer.append(`<div class="row msg_container base_new_user"><div class="col-md-6 col-xs-6"><div class="messages new_user"><small>${author}</small> <br /> ${user} has disconnect from the chat</div></div></div>`);
+    messageContainer.append(`<div class="row msg_container base_new_user"><div class="col-md-8 col-xs-8"><div class="messages new_user"><small>${author}</small> <br /> ${user} has disconnected from the chat</div></div></div>`);
     $("html, body").animate({ scrollTop: $(document).height() });
 }
