@@ -7,7 +7,7 @@
 "use strict";
 
 import $ from "jquery";
-import {messageInput, messageContainer, username, htmlBeginning, htmlEnding} from "./variables";
+import {messageInput, messageContainer, htmlBeginning, htmlEnding} from "./variables";
 import notifyUser from "../notifications";
 import escapeHtml from "../htmlEscape";
 
@@ -16,7 +16,7 @@ import escapeHtml from "../htmlEscape";
  */
 var socket = io();
 
-export function sendMessage(event) {
+export function sendMessage(event, username) {
     /** Prevent the form from submitting **/
     event.preventDefault();
 
@@ -34,8 +34,12 @@ export function sendMessage(event) {
     return false;
 }
 
-export function newMessage(username, message) {
-    messageContainer.append(htmlBeginning + "<small>" + escapeHtml(username) + "</small><br />" + escapeHtml(message).replace(/\n/g, "<br />") + htmlEnding);
+export function newMessage(message, username) {
+    if(username === sessionStorage.user) {
+        messageContainer.append("<div class='row msg_container base_sent'><div class='col-md-10 col-xs-10'><div class='messages msg_sent'><small>" + escapeHtml(username) + "</small><br />" + escapeHtml(message).replace(/\n/g, "<br />") + "</div></div></div>");
+    } else {
+        messageContainer.append("<div class='row msg_container base_receive'><div class='col-md-10 col-xs-10'><div class='messages msg_receive'><small>" + escapeHtml(username) + "</small><br />" + escapeHtml(message).replace(/\n/g, "<br />") + "</div></div></div>");
+    }
 
     /** Scroll to the bottom of the chat ~ **/
     $("html, body").animate({ scrollTop: $(document).height() });
@@ -45,7 +49,12 @@ export function newMessage(username, message) {
     });
 }
 
-export function newUser(user) {
-    messageContainer.append(`<div class='row msg_container base_new_user'><div class='col-md-6 col-xs-6'><div class='messages new_user'>${user} has joined the chat</div></div></div>`);
+export function newUser(author, user) {
+    messageContainer.append(`<div class="row msg_container base_new_user"><div class="col-md-6 col-xs-6"><div class="messages new_user"><small>${author}</small> <br /> ${user} has joined the chat</div></div></div>`);
+    $("html, body").animate({ scrollTop: $(document).height() });
+}
+
+export function userDisconnect(author, user) {
+    messageContainer.append(`<div class="row msg_container base_new_user"><div class="col-md-6 col-xs-6"><div class="messages new_user"><small>${author}</small> <br /> ${user} has disconnect from the chat</div></div></div>`);
     $("html, body").animate({ scrollTop: $(document).height() });
 }

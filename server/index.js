@@ -27,7 +27,7 @@ io.on("connection", function(socket){
      * When the "sendchat" event has triggered, Lets update the chat view!
      */
     socket.on("sendchat", function(msg, username){
-        io.emit("updatechat", username, msg);
+        io.emit("updatechat", msg, username);
     });
 
     /**
@@ -40,16 +40,18 @@ io.on("connection", function(socket){
         usernames[username] = socket.id;
 
         /** notify chat **/
-        io.emit("newUser", username);
+        io.emit("newUser", "SERVER", socket.username);
     });
 
-    socket.on('disconnect', function(){
-        // remove the username from global usernames list
-        delete usernames[socket.username];
-        // update list of users in chat, client-side
-        io.sockets.emit('updateusers', usernames);
-        // echo globally that this client has left
-        socket.broadcast.emit('updatechat', 'SERVER', socket.username + ' has disconnected');
+    socket.on("disconnect", function(){
+        if(socket.username !== undefined) {
+            // remove the username from global usernames list
+            delete usernames[socket.username];
+            // update list of users in chat, client-side
+            io.sockets.emit("updateusers", usernames);
+            // echo globally that this client has left
+            socket.broadcast.emit("userDisconnect", "SERVER", socket.username);
+        }
     });
 });
 

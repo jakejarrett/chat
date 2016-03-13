@@ -59,9 +59,15 @@ $(function() {
         });
     });
 
-    socket.on("newUser", function(user) {
+    socket.on("newUser", function(author, user) {
         if(registered) {
-            messaging.newUser(user);
+            messaging.newUser(author, user);
+        }
+    });
+
+    socket.on("userDisconnect", function(author, user) {
+        if(registered) {
+            messaging.userDisconnect(author, user);
         }
     });
 
@@ -69,7 +75,8 @@ $(function() {
      * When the form is submitted, We will want to show the users message on the screen :)
      */
     $("form#submit-message").submit(function (event) {
-        messaging.sendMessage(event);
+        let username = sessionStorage.user;
+        messaging.sendMessage(event, username);
     });
 
     /**
@@ -80,16 +87,17 @@ $(function() {
             event.preventDefault();
             messageInput.val( messageInput.val() + "\n");
         } else if (event.keyCode == 13 && !event.shiftKey) {
-            messaging.sendMessage(event);
+            let username = sessionStorage.user;
+            messaging.sendMessage(event, username);
         }
     });
 
     /**
      * The app will tell us when to update the view (Socket.io) and it will also give us the data to put there.
      */
-    socket.on("updatechat", function (username, msg) {
+    socket.on("updatechat", function (msg, username) {
         if(registered) {
-            messaging.newMessage(username, msg);
+            messaging.newMessage(msg, username);
         }
     });
 
