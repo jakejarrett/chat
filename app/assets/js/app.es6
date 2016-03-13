@@ -3,13 +3,19 @@
  *
  * @Author - Jake Jarrett
  * @GitHub URL - https://github.com/jakejarrett/chat-example
- *
- * TODO- Convert to ES6 Modules
  */
 
 "use strict";
 
+/**
+ * Import Modules
+ *
+ * If you're unfamiliar with ES6 Modules, read up about them here
+ * @ES6Modules - https://github.com/lukehoban/es6features#modules
+ */
 import $ from "jquery";
+import escapeHtml from "./lib/htmlEscape";
+import notifyUser from "./lib/notifications";
 
 $(function() {
 
@@ -30,16 +36,6 @@ $(function() {
      */
     var htmlBeginning = "<div class='row msg_container base_sent'><div class='col-md-10 col-xs-10'><div class='messages msg_sent'>";
     var htmlEnding = "</div></div></div>";
-
-    /** HTML Escape **/
-    var entityMap = {
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': '&quot;',
-        "'": '&#39;',
-        "/": '&#x2F;'
-    };
 
     /**
      * When the form is submitted, We will want to show the users message on the screen :)
@@ -82,66 +78,6 @@ $(function() {
     $("html").on("click", function (e) {
         messageInput.focus();
     });
-
-    /**
-     * Escape HTML
-     *  We don't want a user to run random scripts in the page, so lets escape all messages.
-     *
-     * Based on Mustache's code
-     * @Mustache.js - https://github.com/janl/mustache.js/blob/master/mustache.js#L60
-     *
-     * @param {string} string
-     * @returns {string}
-     */
-    var escapeHtml = function(string) {
-
-        /** Array of entities we will escape **/
-        let entityMap = {
-            "&": "&amp;",
-            "<": "&lt;",
-            ">": "&gt;",
-            '"': '&quot;',
-            "'": '&#39;',
-            "/": '&#x2F;'
-        };
-
-        /** Return the escaped string **/
-        return String(string).replace(/[&<>"'\/]/g, function (s) {
-            return entityMap[s];
-        });
-    };
-
-    /**
-     * Simple function to present a notification to the user when called
-     *
-     * @param {string} title
-     * @param {object} options
-     * @returns {boolean}
-     */
-    var notifyUser = function(title, options) {
-        /**
-         * If the user has given us permission to use notifications, Lets notify them of a new message!
-         */
-        if ("granted" === Notification.permission) {
-            var notification = new Notification(title, options);
-        }
-        /**
-         * If they haven't said no yet, Lets ask before ending the function.
-         */
-        else if ("denied" !== Notification.permission) {
-            Notification.requestPermission(function (permission) {
-                /** If the user agrees to notifications, Lets setup a new notification. **/
-                if (permission === "granted") {
-                    var notification = new Notification(title, options);
-                }
-            });
-        }
-
-        /**
-         * Because the user doesn't want notifications, We will exit the function now.
-         */
-        return false;
-    };
 
     /**
      * Send the message
