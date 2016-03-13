@@ -39,9 +39,6 @@ io.on("connection", function(socket){
 
         usernames[username] = socket.id;
 
-        /** store username **/
-        sessionStorage.user = username;
-
         /** notify chat **/
         io.emit("newUser", username);
     });
