@@ -32,11 +32,20 @@ $(function() {
      */
     var socket = io();
 
+    /**
+     * When socket starts the initial connection, lets get the user to register.
+     */
     socket.on("connect", function() {
+        /**
+         * Make sure they're registered (EG/ if their connection dropped etc)
+         */
         if(!registered) {
             $("#username").focus();
         }
 
+        /**
+         * When the user submits the form (Presses submit / Presses enter)
+         */
         usernameRegistrationForm.submit(function(event){
             /** Because we use this selector more than once, lets set it as a variable **/
             let username = $("#username").val().trim();
@@ -59,12 +68,18 @@ $(function() {
         });
     });
 
+    /**
+     * When a new user joins, lets check if you're registered & if so, Then notify you a new user has joined the chat.
+     */
     socket.on("newUser", function(author, user) {
         if(registered) {
             messaging.newUser(author, user);
         }
     });
 
+    /**
+     * When a user leaves, lets check if you're registered & if so, Then notify you a user has left the chat.
+     */
     socket.on("userDisconnect", function(author, user) {
         if(registered) {
             messaging.userDisconnect(author, user);
