@@ -1,7 +1,8 @@
-# chat-example
+# Chat
+This is based on the code from socket.io's [chat-example](http://socket.io/get-started/chat/)
 
-This is the source code for a very simple chat example used for 
-the [Getting Started](http://socket.io/get-started/chat/) guide 
-of the Socket.IO website.
-
-Please refer to it to learn how to run this application.
+# Features
+    * Users have to register a name to join (Near 50-60%)
+    * Users can send/recieve global messages
+    * Notifications (Improvements coming to this too)
+    * ES6 :smile_cat:
