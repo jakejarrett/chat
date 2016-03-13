@@ -111,6 +111,7 @@ img {
 .panel-footer {
     position: fixed;
     bottom: 0;
+    width: 100%;
 }
 
 .chat-submit-button {
