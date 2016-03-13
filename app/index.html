@@ -11,9 +11,12 @@
 
     <div class="landing-page">
         <form id="landing-page-form" class="landing-page-form">
-            <input class="form-control landing-page-margin" type="text" name="username" id="username" placeholder="Enter your username" />
-            <button class="btn btn-primary landing-page-margin" id="register-username" autocomplete="off">Submit</button>
+            <input class="form-control landing-page-margin" type="text" name="username" id="username" placeholder="Enter your username" autocomplete="off" />
+            <button class="btn btn-primary landing-page-margin" id="register-username">Submit</button>
         </form>
+
+        <div class="alert alert-danger error error-hide" role="alert">
+        </div>
     </div>
 
     <div class="app">
@@ -27,11 +30,11 @@
             <div class="panel-footer">
                 <form id="submit-message" action="">
                     <div class="col-xs-9 col-sm-10 col-md-11">
-                        <textarea id="message" type="text" class="form-control chat_input" placeholder="Write your message here..." data-emojiable="true"></textarea>
+                        <textarea id="message" type="text" class="form-control chat_input" placeholder="Write your message here..." data-emojiable="true" autocomplete="off"></textarea>
                     </div>
                     <div class="col-xs-2 col-sm-2 col-md-1">
                     <span class="input-group-btn">
-                        <button class="btn btn-primary chat-submit-button" id="button-chat" autocomplete="off">Send</button>
+                        <button class="btn btn-primary chat-submit-button" id="button-chat">Send</button>
                     </span>
                     </div>
                 </form>

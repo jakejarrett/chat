@@ -47,39 +47,66 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
      */
     var socket = io();
 
+    /**
+     * When socket starts the initial connection, lets get the user to register.
+     */
     socket.on("connect", function () {
+        /**
+         * Make sure they're registered (EG/ if their connection dropped etc)
+         */
         if (!registered) {
             (0, _jquery2.default)("#username").focus();
         }
 
+        /**
+         * When the user submits the form (Presses submit / Presses enter)
+         */
         _variables.usernameRegistrationForm.submit(function (event) {
-            /** Because we use this selector more than once, lets set it as a variable **/
-            var username = (0, _jquery2.default)("#username").val().trim();
+            /** Prevent the form from submitting **/
+            event.preventDefault();
 
-            /** It would be silly to let someone use spaces as their name. **/
-            if (0 !== username) {
-                /** Prevent the form from submitting **/
-                event.preventDefault();
-                /** Notify the chat that there is a new user **/
-                socket.emit("newUser", username);
+            (0, _jquery2.default)(".error").text("").addClass("error-hide");
 
-                /** Store Username in session **/
-                sessionStorage.user = username;
-                registered = true;
+            /** Trim whitespace & set username to lowerspace so there can't be duplicate users **/
+            var username = (0, _jquery2.default)("#username").val().trim().toLowerCase();
 
-                /** Show the App for the new user! **/
-                _variables.landingPage.remove();
-                _variables.app.show();
-            }
+            /** Notify the chat that there is a new user **/
+            socket.emit("newUser", username);
+
+            socket.on("registrationFailed", function (message) {
+                (0, _jquery2.default)(".error").text(message).removeClass("error-hide");
+            });
+
+            socket.on("registrationSuccess", function () {
+                /** It would be silly to let someone use spaces as their name. **/
+                if (0 === username) {
+                    return false;
+                } else {
+                    /** Store Username in session **/
+                    sessionStorage.user = username;
+                    registered = true;
+
+                    /** Show the App for the new user! **/
+                    _variables.landingPage.remove();
+                    (0, _jquery2.default)(".error").remove();
+                    _variables.app.show();
+                }
+            });
         });
     });
 
+    /**
+     * When a new user joins, lets check if you're registered & if so, Then notify you a new user has joined the chat.
+     */
     socket.on("newUser", function (author, user) {
         if (registered) {
             messaging.newUser(author, user);
         }
     });
 
+    /**
+     * When a user leaves, lets check if you're registered & if so, Then notify you a user has left the chat.
+     */
     socket.on("userDisconnect", function (author, user) {
         if (registered) {
             messaging.userDisconnect(author, user);

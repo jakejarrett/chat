@@ -47,24 +47,36 @@ $(function() {
          * When the user submits the form (Presses submit / Presses enter)
          */
         usernameRegistrationForm.submit(function(event){
-            /** Because we use this selector more than once, lets set it as a variable **/
-            let username = $("#username").val().trim();
+            /** Prevent the form from submitting **/
+            event.preventDefault();
 
-            /** It would be silly to let someone use spaces as their name. **/
-            if(0 !== username) {
-                /** Prevent the form from submitting **/
-                event.preventDefault();
-                /** Notify the chat that there is a new user **/
-                socket.emit("newUser", username);
+            $(".error").text("").addClass("error-hide");
 
-                /** Store Username in session **/
-                sessionStorage.user = username;
-                registered = true;
+            /** Trim whitespace & set username to lowerspace so there can't be duplicate users **/
+            let username = $("#username").val().trim().toLowerCase();
 
-                /** Show the App for the new user! **/
-                landingPage.remove();
-                app.show();
-            }
+            /** Notify the chat that there is a new user **/
+            socket.emit("newUser", username);
+
+            socket.on("registrationFailed", function(message) {
+                $(".error").text(message).removeClass("error-hide");
+            });
+
+            socket.on("registrationSuccess", function(){
+                /** It would be silly to let someone use spaces as their name. **/
+                if(0 === username) {
+                    return false;
+                } else {
+                    /** Store Username in session **/
+                    sessionStorage.user = username;
+                    registered = true;
+
+                    /** Show the App for the new user! **/
+                    landingPage.remove();
+                    $(".error").remove();
+                    app.show();
+                }
+            });
         });
     });
 

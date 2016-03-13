@@ -18,9 +18,12 @@ app.get("/", function(req, res){
 
 /** Users currently connected **/
 var usernames = {};
+var clients = [];
 
 /** When socket.io detects a connection **/
 io.on("connection", function(socket){
+    clients[socket.id] = socket;
+
     /** Core Functionality **/
 
     /**
@@ -35,12 +38,23 @@ io.on("connection", function(socket){
      * the user has joined!
      */
     socket.on("newUser", function(username) {
-        socket.username = username;
+        if(!usernames[username] && "" !== username.trim()) {
+            /** Tell the app to proceed with registration **/
+            socket.emit("registrationSuccess");
+            socket.username = username;
 
-        usernames[username] = socket.id;
+            usernames[username] = socket.id;
 
-        /** notify chat **/
-        io.emit("newUser", "SERVER", socket.username);
+            /** notify chat **/
+            io.emit("newUser", "SERVER", socket.username);
+        }
+        if(usernames[username]) {
+            /** Tell the app to reject registration **/
+            socket.emit("registrationFailed", "Username already taken.");
+        }
+        if("" === username.trim()) {
+            socket.emit("registrationFailed", "Username can't be empty");
+        }
     });
 
     socket.on("disconnect", function(){
