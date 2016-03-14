@@ -116,20 +116,24 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
      * When the form is submitted, We will want to show the users message on the screen :)
      */
     (0, _jquery2.default)("form#submit-message").submit(function (event) {
-        var username = sessionStorage.user;
-        messaging.sendMessage(event, username);
+        if (registered) {
+            var username = sessionStorage.user;
+            messaging.sendMessage(event, username);
+        }
     });
 
     /**
      * When a user clicks Enter on the textarea, Lets instead make that send the message.
      */
     _variables.messageInput.keydown(function (event) {
-        if (event.keyCode == 13 && event.ctrlKey) {
-            event.preventDefault();
-            _variables.messageInput.val(_variables.messageInput.val() + "\n");
-        } else if (event.keyCode == 13 && !event.shiftKey) {
-            var username = sessionStorage.user;
-            messaging.sendMessage(event, username);
+        if (registered) {
+            if (event.keyCode == 13 && event.ctrlKey) {
+                event.preventDefault();
+                _variables.messageInput.val(_variables.messageInput.val() + "\n");
+            } else if (event.keyCode == 13 && !event.shiftKey) {
+                var username = sessionStorage.user;
+                messaging.sendMessage(event, username);
+            }
         }
     });
 
@@ -230,6 +234,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 var socket = io();
 
+/**
+ * Gives the server the message & username and then clears the input value.
+ *
+ * @param event
+ * @param username
+ * @returns {boolean}
+ */
 function sendMessage(event, username) {
     /** Prevent the form from submitting **/
     event.preventDefault();
@@ -248,10 +259,18 @@ function sendMessage(event, username) {
     return false;
 }
 
+/**
+ * When the server broadcasts a new message, Lets check who sent it and style it appropriately.
+ *
+ * @param message
+ * @param username
+ */
 function newMessage(message, username) {
+    /** If you sent the message, Lets set the style as "sent" **/
     if (username === sessionStorage.user) {
         _variables.messageContainer.append("<div class='row msg_container base_sent'><div class='col-md-10 col-xs-10'><div class='messages msg_sent'><small>" + (0, _htmlEscape2.default)(username) + "</small><br />" + (0, _htmlEscape2.default)(message).replace(/\n/g, "<br />") + "</div></div></div>");
     } else {
+        /** If you received the message, Lets set the style as "received" **/
         _variables.messageContainer.append("<div class='row msg_container base_receive'><div class='col-md-10 col-xs-10'><div class='messages msg_receive'><small>" + (0, _htmlEscape2.default)(username) + "</small><br />" + (0, _htmlEscape2.default)(message).replace(/\n/g, "<br />") + "</div></div></div>");
     }
 
@@ -263,13 +282,27 @@ function newMessage(message, username) {
     });
 }
 
+/**
+ * Broadcast from the server that a user has joined the chat.
+ *
+ * @param author
+ * @param user
+ */
 function newUser(author, user) {
-    _variables.messageContainer.append("<div class=\"row msg_container base_new_user\"><div class=\"col-md-8 col-xs-8\"><div class=\"messages new_user\"><small>" + author + "</small> <br /> " + user + " has joined the chat</div></div></div>");
+    _variables.messageContainer.append("<div class=\"row msg_container base_new_user\"><div class=\"col-md-8 col-xs-8\"><div class=\"messages new_user\"><small>" + author + "</small> <br /> " + user + " has joined the chat\n    </div></div></div>");
+
     (0, _jquery2.default)("html, body").animate({ scrollTop: (0, _jquery2.default)(document).height() });
 }
 
+/**
+ * Broadcast from the server that a user has left the chat.
+ *
+ * @param author
+ * @param user
+ */
 function userDisconnect(author, user) {
-    _variables.messageContainer.append("<div class=\"row msg_container base_new_user\"><div class=\"col-md-8 col-xs-8\"><div class=\"messages new_user\"><small>" + author + "</small> <br /> " + user + " has disconnected from the chat</div></div></div>");
+    _variables.messageContainer.append("<div class=\"row msg_container base_new_user\"><div class=\"col-md-8 col-xs-8\"><div class=\"messages new_user\"><small>" + author + "</small> <br /> " + user + " has disconnected from\n    the chat</div></div></div>");
+
     (0, _jquery2.default)("html, body").animate({ scrollTop: (0, _jquery2.default)(document).height() });
 }
 
@@ -310,6 +343,7 @@ exports.default = function (title, options) {
     if ("granted" === Notification.permission) {
         var notification = new Notification(title, options);
     }
+
     /**
      * If they haven't said no yet, Lets ask before ending the function.
      */

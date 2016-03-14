@@ -16,6 +16,13 @@ import escapeHtml from "../htmlEscape";
  */
 var socket = io();
 
+/**
+ * Gives the server the message & username and then clears the input value.
+ *
+ * @param event
+ * @param username
+ * @returns {boolean}
+ */
 export function sendMessage(event, username) {
     /** Prevent the form from submitting **/
     event.preventDefault();
@@ -34,11 +41,21 @@ export function sendMessage(event, username) {
     return false;
 }
 
+/**
+ * When the server broadcasts a new message, Lets check who sent it and style it appropriately.
+ *
+ * @param message
+ * @param username
+ */
 export function newMessage(message, username) {
+    /** If you sent the message, Lets set the style as "sent" **/
     if(username === sessionStorage.user) {
-        messageContainer.append("<div class='row msg_container base_sent'><div class='col-md-10 col-xs-10'><div class='messages msg_sent'><small>" + escapeHtml(username) + "</small><br />" + escapeHtml(message).replace(/\n/g, "<br />") + "</div></div></div>");
+        messageContainer.append("<div class='row msg_container base_sent'><div class='col-md-10 col-xs-10'><div class='messages msg_sent'><small>" + escapeHtml(username) + "</small><br />" +
+            escapeHtml(message).replace(/\n/g, "<br />") + "</div></div></div>");
     } else {
-        messageContainer.append("<div class='row msg_container base_receive'><div class='col-md-10 col-xs-10'><div class='messages msg_receive'><small>" + escapeHtml(username) + "</small><br />" + escapeHtml(message).replace(/\n/g, "<br />") + "</div></div></div>");
+        /** If you received the message, Lets set the style as "received" **/
+        messageContainer.append("<div class='row msg_container base_receive'><div class='col-md-10 col-xs-10'><div class='messages msg_receive'><small>" + escapeHtml(username) + "</small><br />" +
+            escapeHtml(message).replace(/\n/g, "<br />") + "</div></div></div>");
     }
 
     /** Scroll to the bottom of the chat ~ **/
@@ -49,12 +66,28 @@ export function newMessage(message, username) {
     });
 }
 
+/**
+ * Broadcast from the server that a user has joined the chat.
+ *
+ * @param author
+ * @param user
+ */
 export function newUser(author, user) {
-    messageContainer.append(`<div class="row msg_container base_new_user"><div class="col-md-8 col-xs-8"><div class="messages new_user"><small>${author}</small> <br /> ${user} has joined the chat</div></div></div>`);
+    messageContainer.append(`<div class="row msg_container base_new_user"><div class="col-md-8 col-xs-8"><div class="messages new_user"><small>${author}</small> <br /> ${user} has joined the chat
+    </div></div></div>`);
+
     $("html, body").animate({ scrollTop: $(document).height() });
 }
 
+/**
+ * Broadcast from the server that a user has left the chat.
+ *
+ * @param author
+ * @param user
+ */
 export function userDisconnect(author, user) {
-    messageContainer.append(`<div class="row msg_container base_new_user"><div class="col-md-8 col-xs-8"><div class="messages new_user"><small>${author}</small> <br /> ${user} has disconnected from the chat</div></div></div>`);
+    messageContainer.append(`<div class="row msg_container base_new_user"><div class="col-md-8 col-xs-8"><div class="messages new_user"><small>${author}</small> <br /> ${user} has disconnected from
+    the chat</div></div></div>`);
+
     $("html, body").animate({ scrollTop: $(document).height() });
 }

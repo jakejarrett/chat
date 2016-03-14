@@ -12,6 +12,7 @@ export default function(title, options) {
     if ("granted" === Notification.permission) {
         var notification = new Notification(title, options);
     }
+
     /**
      * If they haven't said no yet, Lets ask before ending the function.
      */

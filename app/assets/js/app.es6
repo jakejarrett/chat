@@ -101,20 +101,24 @@ $(function() {
      * When the form is submitted, We will want to show the users message on the screen :)
      */
     $("form#submit-message").submit(function (event) {
-        let username = sessionStorage.user;
-        messaging.sendMessage(event, username);
+        if(registered) {
+            let username = sessionStorage.user;
+            messaging.sendMessage(event, username);
+        }
     });
 
     /**
      * When a user clicks Enter on the textarea, Lets instead make that send the message.
      */
     messageInput.keydown(function(event) {
-        if(event.keyCode == 13 && event.ctrlKey) {
-            event.preventDefault();
-            messageInput.val( messageInput.val() + "\n");
-        } else if (event.keyCode == 13 && !event.shiftKey) {
-            let username = sessionStorage.user;
-            messaging.sendMessage(event, username);
+        if(registered) {
+            if (event.keyCode == 13 && event.ctrlKey) {
+                event.preventDefault();
+                messageInput.val(messageInput.val() + "\n");
+            } else if (event.keyCode == 13 && !event.shiftKey) {
+                let username = sessionStorage.user;
+                messaging.sendMessage(event, username);
+            }
         }
     });
 
