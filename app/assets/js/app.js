@@ -312,7 +312,7 @@ function userDisconnect(author, user) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.htmlEnding = exports.htmlBeginning = exports.usernameRegistrationForm = exports.messageContainer = exports.messageInput = exports.landingPage = exports.app = undefined;
+exports.usernameRegistrationForm = exports.messageContainer = exports.messageInput = exports.landingPage = exports.app = undefined;
 
 var _jquery = require("jquery");
 
@@ -326,8 +326,6 @@ var landingPage = exports.landingPage = (0, _jquery2.default)(".landing-page");
 var messageInput = exports.messageInput = (0, _jquery2.default)("#message");
 var messageContainer = exports.messageContainer = (0, _jquery2.default)("#messageContainer");
 var usernameRegistrationForm = exports.usernameRegistrationForm = (0, _jquery2.default)("form#landing-page-form");
-var htmlBeginning = exports.htmlBeginning = "<div class='row msg_container base_sent'><div class='col-md-10 col-xs-10'><div class='messages msg_sent'>";
-var htmlEnding = exports.htmlEnding = "</div></div></div>";
 
 },{"jquery":6}],5:[function(require,module,exports){
 "use strict";

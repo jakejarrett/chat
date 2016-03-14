@@ -7,7 +7,7 @@
 "use strict";
 
 import $ from "jquery";
-import {messageInput, messageContainer, htmlBeginning, htmlEnding} from "./variables";
+import {messageInput, messageContainer} from "./variables";
 import notifyUser from "../notifications";
 import escapeHtml from "../htmlEscape";
 
