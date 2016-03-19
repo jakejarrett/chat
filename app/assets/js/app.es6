@@ -63,8 +63,10 @@ $(function() {
             });
 
             socket.on("registrationSuccess", function(){
-                /** It would be silly to let someone use spaces as their name. **/
-                if(0 === username) {
+                /**
+                 * We don't want the username to be spaces (EG/ "      ") or the username to be "all" (Would be silly, as we use @all for global notifications)
+                 */
+                if(0 === username && "all" !== username) {
                     return false;
                 } else {
                     /** Store Username in session **/
@@ -74,6 +76,9 @@ $(function() {
                     /** Show the App for the new user! **/
                     landingPage.remove();
                     app.show();
+
+                    /** Focus the message input when we"ve loaded the page, So users can just start chatting! **/
+                    messageInput.focus();
                 }
             });
         });
@@ -136,7 +141,7 @@ $(function() {
      *
      * NOTE- this is only for development purposes right now, will be removed later.
      */
-    $("html").not(".messages").click(function (e) {
+    $("html").not(".messages").click(function() {
         if(registered) {
             messageInput.focus();
         } else {

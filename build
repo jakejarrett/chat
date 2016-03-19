@@ -1,0 +1,4 @@
+#!/bin/sh
+echo "Running browserify on app.es6"
+browserify app/assets/js/app.es6 -o app/assets/js/app.js -t [ babelify --presets [ es2015 ] ]
+echo "Done!"
