@@ -141,7 +141,16 @@ $(function() {
      *
      * NOTE- this is only for development purposes right now, will be removed later.
      */
-    $("html").not(".messages").click(function() {
+    $("html").not(".messages").click(function(event) {
+        /**
+         * We're checking if they've clicked inside the messages, if they have, We'll return false!
+         */
+        let directElement = event.target;
+        let parentElement = event.target.parentElement;
+
+        if(0 <= parentElement.className.indexOf("messages") || 0 <= directElement.className.indexOf("messages")) {
+            return false;
+        }
         if(registered) {
             messageInput.focus();
         } else {

@@ -7,7 +7,7 @@
 "use strict";
 
 import $ from "jquery";
-import {messageInput, messageContainer} from "./variables";
+import {messageInput, messageContainer, urlRegEx} from "./variables";
 import notifyUser from "../notifications";
 import escapeHtml from "../htmlEscape";
 
@@ -63,11 +63,11 @@ export function newMessage(message, username) {
     /** If you sent the message, Lets set the style as "sent" **/
     if(username === sessionStorage.user) {
         messageContainer.append("<div class='row msg_container base_sent'><div class='col-md-10 col-xs-10'><div class='messages msg_sent'><small>" + escapeHtml(username) + "</small><br />" +
-            escapeHtml(message).replace(/\n/g, "<br />") + "</div></div></div>");
+            escapeHtml(message).replace(/\n/g, "<br />").replace(urlRegEx, "<a href='$1'>$1</a>") + "</div></div></div>");
     } else {
         /** If you received the message, Lets set the style as "received" **/
         messageContainer.append("<div class='row msg_container base_receive'><div class='col-md-10 col-xs-10'><div class='messages msg_receive'><small>" + escapeHtml(username) + "</small><br />" +
-            escapeHtml(message).replace(/\n/g, "<br />") + "</div></div></div>");
+            escapeHtml(message).replace(/\n/g, "<br />").replace(urlRegEx, "<a href='$1'>$1</a>") + "</div></div></div>");
     }
 
     /** Scroll to the bottom of the chat ~ **/

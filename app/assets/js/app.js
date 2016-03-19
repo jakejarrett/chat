@@ -156,7 +156,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
      *
      * NOTE- this is only for development purposes right now, will be removed later.
      */
-    (0, _jquery2.default)("html").not(".messages").click(function () {
+    (0, _jquery2.default)("html").not(".messages").click(function (event) {
+        /**
+         * We're checking if they've clicked inside the messages, if they have, We'll return false!
+         */
+        var directElement = event.target;
+        var parentElement = event.target.parentElement;
+
+        if (0 <= parentElement.className.indexOf("messages") || 0 <= directElement.className.indexOf("messages")) {
+            return false;
+        }
         if (registered) {
             _variables.messageInput.focus();
         } else {
@@ -191,12 +200,11 @@ exports.default = function (string) {
         "<": "&lt;",
         ">": "&gt;",
         '"': '&quot;',
-        "'": '&#39;',
-        "/": '&#x2F;'
+        "'": '&#39;'
     };
 
     /** Return the escaped string **/
-    return String(string).replace(/[&<>"'\/]/g, function (s) {
+    return String(string).replace(/[&<>"']/g, function (s) {
         return entityMap[s];
     });
 };
@@ -285,10 +293,10 @@ function newMessage(message, username) {
 
   /** If you sent the message, Lets set the style as "sent" **/
   if (username === sessionStorage.user) {
-    _variables.messageContainer.append("<div class='row msg_container base_sent'><div class='col-md-10 col-xs-10'><div class='messages msg_sent'><small>" + (0, _htmlEscape2.default)(username) + "</small><br />" + (0, _htmlEscape2.default)(message).replace(/\n/g, "<br />") + "</div></div></div>");
+    _variables.messageContainer.append("<div class='row msg_container base_sent'><div class='col-md-10 col-xs-10'><div class='messages msg_sent'><small>" + (0, _htmlEscape2.default)(username) + "</small><br />" + (0, _htmlEscape2.default)(message).replace(/\n/g, "<br />").replace(_variables.urlRegEx, "<a href='$1'>$1</a>") + "</div></div></div>");
   } else {
     /** If you received the message, Lets set the style as "received" **/
-    _variables.messageContainer.append("<div class='row msg_container base_receive'><div class='col-md-10 col-xs-10'><div class='messages msg_receive'><small>" + (0, _htmlEscape2.default)(username) + "</small><br />" + (0, _htmlEscape2.default)(message).replace(/\n/g, "<br />") + "</div></div></div>");
+    _variables.messageContainer.append("<div class='row msg_container base_receive'><div class='col-md-10 col-xs-10'><div class='messages msg_receive'><small>" + (0, _htmlEscape2.default)(username) + "</small><br />" + (0, _htmlEscape2.default)(message).replace(/\n/g, "<br />").replace(_variables.urlRegEx, "<a href='$1'>$1</a>") + "</div></div></div>");
   }
 
   /** Scroll to the bottom of the chat ~ **/
@@ -334,7 +342,7 @@ function userDisconnect(author, user) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.usernameRegistrationForm = exports.messageContainer = exports.messageInput = exports.landingPage = exports.app = undefined;
+exports.urlRegEx = exports.usernameRegistrationForm = exports.messageContainer = exports.messageInput = exports.landingPage = exports.app = undefined;
 
 var _jquery = require("jquery");
 
@@ -348,6 +356,7 @@ var landingPage = exports.landingPage = (0, _jquery2.default)(".landing-page");
 var messageInput = exports.messageInput = (0, _jquery2.default)("#message");
 var messageContainer = exports.messageContainer = (0, _jquery2.default)("#messageContainer");
 var usernameRegistrationForm = exports.usernameRegistrationForm = (0, _jquery2.default)("form#landing-page-form");
+var urlRegEx = exports.urlRegEx = /(\b(https?|ftp|file|):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 
 },{"jquery":6}],5:[function(require,module,exports){
 "use strict";

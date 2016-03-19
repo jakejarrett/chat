@@ -19,12 +19,11 @@ export default function(string) {
         "<": "&lt;",
         ">": "&gt;",
         '"': '&quot;',
-        "'": '&#39;',
-        "/": '&#x2F;'
+        "'": '&#39;'
     };
 
     /** Return the escaped string **/
-    return String(string).replace(/[&<>"'\/]/g, function (s) {
+    return String(string).replace(/[&<>"']/g, function (s) {
         return entityMap[s];
     });
 }
