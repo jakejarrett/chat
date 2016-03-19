@@ -142,6 +142,11 @@ img {
     width: 100%;
 }
 
+.chat_input {
+    resize: vertical;
+    max-height: 200px;
+}
+
 .app {
     display: none;
 }
