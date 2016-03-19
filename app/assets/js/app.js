@@ -206,7 +206,7 @@ exports.default = function (string) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 exports.sendMessage = sendMessage;
 exports.newMessage = newMessage;
@@ -242,21 +242,21 @@ var socket = io();
  * @returns {boolean}
  */
 function sendMessage(event, username) {
-    /** Prevent the form from submitting **/
-    event.preventDefault();
+  /** Prevent the form from submitting **/
+  event.preventDefault();
 
-    /** Check if the input actually has stuff in it (EG/ not just a bunch of spaces) **/
-    if (0 !== _variables.messageInput.val().trim().length) {
+  /** Check if the input actually has stuff in it (EG/ not just a bunch of spaces) **/
+  if (0 !== _variables.messageInput.val().trim().length) {
 
-        /** Let the app know we want to send the message **/
-        socket.emit("sendchat", _variables.messageInput.val(), username);
+    /** Let the app know we want to send the message **/
+    socket.emit("sendchat", _variables.messageInput.val(), username);
 
-        /** Clear the input **/
-        _variables.messageInput.val("");
-    }
+    /** Clear the input **/
+    _variables.messageInput.val("");
+  }
 
-    /** Always return false **/
-    return false;
+  /** Always return false **/
+  return false;
 }
 
 /**
@@ -266,20 +266,37 @@ function sendMessage(event, username) {
  * @param username
  */
 function newMessage(message, username) {
-    /** If you sent the message, Lets set the style as "sent" **/
-    if (username === sessionStorage.user) {
-        _variables.messageContainer.append("<div class='row msg_container base_sent'><div class='col-md-10 col-xs-10'><div class='messages msg_sent'><small>" + (0, _htmlEscape2.default)(username) + "</small><br />" + (0, _htmlEscape2.default)(message).replace(/\n/g, "<br />") + "</div></div></div>");
-    } else {
-        /** If you received the message, Lets set the style as "received" **/
-        _variables.messageContainer.append("<div class='row msg_container base_receive'><div class='col-md-10 col-xs-10'><div class='messages msg_receive'><small>" + (0, _htmlEscape2.default)(username) + "</small><br />" + (0, _htmlEscape2.default)(message).replace(/\n/g, "<br />") + "</div></div></div>");
-    }
+  /**
+   * We want to detect if the message contains an @ sign
+   * @type {number|Number}
+   */
+  var directMessage = message.indexOf("@");
 
-    /** Scroll to the bottom of the chat ~ **/
-    (0, _jquery2.default)("html, body").animate({ scrollTop: (0, _jquery2.default)(document).height() });
+  /**
+   * We want to make it so we only have the username they targeted EG/ we don't want "@jake hey whats up", we want "jake" instead.
+   * @type {string|String}
+   */
+  var targetUser = message.substring(directMessage + 1).split(" ").slice(0, 1)[0];
 
+  /** If you sent the message, Lets set the style as "sent" **/
+  if (username === sessionStorage.user) {
+    _variables.messageContainer.append("<div class='row msg_container base_sent'><div class='col-md-10 col-xs-10'><div class='messages msg_sent'><small>" + (0, _htmlEscape2.default)(username) + "</small><br />" + (0, _htmlEscape2.default)(message).replace(/\n/g, "<br />") + "</div></div></div>");
+  } else {
+    /** If you received the message, Lets set the style as "received" **/
+    _variables.messageContainer.append("<div class='row msg_container base_receive'><div class='col-md-10 col-xs-10'><div class='messages msg_receive'><small>" + (0, _htmlEscape2.default)(username) + "</small><br />" + (0, _htmlEscape2.default)(message).replace(/\n/g, "<br />") + "</div></div></div>");
+  }
+
+  /** Scroll to the bottom of the chat ~ **/
+  (0, _jquery2.default)("html, body").animate({ scrollTop: (0, _jquery2.default)(document).height() });
+
+  /**
+   * Only notify if someone directly includes you or @all (Not sure if i'll keep this in)
+   */
+  if (0 <= directMessage && "all" === targetUser || sessionStorage.user === targetUser) {
     (0, _notifications2.default)("Message from" + username, {
-        body: message
+      body: message
     });
+  }
 }
 
 /**
@@ -289,9 +306,9 @@ function newMessage(message, username) {
  * @param user
  */
 function newUser(author, user) {
-    _variables.messageContainer.append("<div class=\"row msg_container base_new_user\"><div class=\"col-md-8 col-xs-8\"><div class=\"messages new_user\"><small>" + author + "</small> <br /> " + user + " has joined the chat\n    </div></div></div>");
+  _variables.messageContainer.append("<div class=\"row msg_container base_new_user\"><div class=\"col-md-8 col-xs-8\"><div class=\"messages new_user\"><small>" + author + "</small> <br /> " + user + " has joined the chat\n    </div></div></div>");
 
-    (0, _jquery2.default)("html, body").animate({ scrollTop: (0, _jquery2.default)(document).height() });
+  (0, _jquery2.default)("html, body").animate({ scrollTop: (0, _jquery2.default)(document).height() });
 }
 
 /**
@@ -301,9 +318,9 @@ function newUser(author, user) {
  * @param user
  */
 function userDisconnect(author, user) {
-    _variables.messageContainer.append("<div class=\"row msg_container base_new_user\"><div class=\"col-md-8 col-xs-8\"><div class=\"messages new_user\"><small>" + author + "</small> <br /> " + user + " has disconnected from\n    the chat</div></div></div>");
+  _variables.messageContainer.append("<div class=\"row msg_container base_new_user\"><div class=\"col-md-8 col-xs-8\"><div class=\"messages new_user\"><small>" + author + "</small> <br /> " + user + " has disconnected from\n    the chat</div></div></div>");
 
-    (0, _jquery2.default)("html, body").animate({ scrollTop: (0, _jquery2.default)(document).height() });
+  (0, _jquery2.default)("html, body").animate({ scrollTop: (0, _jquery2.default)(document).height() });
 }
 
 },{"../htmlEscape":2,"../notifications":5,"./variables":4,"jquery":6}],4:[function(require,module,exports){

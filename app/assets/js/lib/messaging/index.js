@@ -48,6 +48,18 @@ export function sendMessage(event, username) {
  * @param username
  */
 export function newMessage(message, username) {
+    /**
+     * We want to detect if the message contains an @ sign
+     * @type {number|Number}
+     */
+    var directMessage = message.indexOf("@");
+
+    /**
+     * We want to make it so we only have the username they targeted EG/ we don't want "@jake hey whats up", we want "jake" instead.
+     * @type {string|String}
+     */
+    var targetUser = message.substring(directMessage+ 1).split(" ").slice(0, 1)[0];
+
     /** If you sent the message, Lets set the style as "sent" **/
     if(username === sessionStorage.user) {
         messageContainer.append("<div class='row msg_container base_sent'><div class='col-md-10 col-xs-10'><div class='messages msg_sent'><small>" + escapeHtml(username) + "</small><br />" +
@@ -61,9 +73,14 @@ export function newMessage(message, username) {
     /** Scroll to the bottom of the chat ~ **/
     $("html, body").animate({ scrollTop: $(document).height() });
 
-    notifyUser("Message from" + username, {
-        body: message
-    });
+    /**
+     * Only notify if someone directly includes you or @all (Not sure if i'll keep this in)
+     */
+    if(0 <=  directMessage && "all" === targetUser || sessionStorage.user === targetUser) {
+        notifyUser("Message from" + username, {
+            body: message
+        });
+    }
 }
 
 /**
