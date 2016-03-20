@@ -25,6 +25,8 @@ var _notifications2 = _interopRequireDefault(_notifications);
 
 var _variables = require("./lib/messaging/variables");
 
+var _functions = require("./lib/messaging/functions");
+
 var _messaging = require("./lib/messaging");
 
 var messaging = _interopRequireWildcard(_messaging);
@@ -199,6 +201,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
             /** Reset connected users sidebar. **/
             (0, _jquery2.default)("#connected-users").html("");
 
+            (0, _jquery2.default)("#connectedUsersAmount").text("Users (" + (0, _functions.objectSize)(users) + ")");
+
             _jquery2.default.each(users, function (userName, userObject) {
                 (0, _jquery2.default)("#connected-users").append("<li>" + userName + "</li>");
             });
@@ -206,7 +210,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
     });
 });
 
-},{"./lib/messaging":3,"./lib/messaging/variables":4,"./lib/notifications":5,"jquery":6}],2:[function(require,module,exports){
+},{"./lib/messaging":4,"./lib/messaging/functions":3,"./lib/messaging/variables":5,"./lib/notifications":6,"jquery":7}],2:[function(require,module,exports){
 /**
  * Escape HTML
  *  We don't want a user to run random scripts in the page, so lets escape all messages.
@@ -242,6 +246,32 @@ exports.default = function (string) {
 };
 
 },{}],3:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.isMobile = isMobile;
+exports.objectSize = objectSize;
+/**
+ * Detect if mobile
+ * @returns {boolean}
+ */
+function isMobile() {
+    return (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    );
+}
+
+function objectSize(obj) {
+    var size = 0,
+        key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+}
+
+},{}],4:[function(require,module,exports){
 /**
  * Messaging Module, Handles message events (EG/ New Message, Update Message, Delete Message & such)
  *
@@ -368,7 +398,7 @@ function userDisconnect(author, user) {
   (0, _jquery2.default)("html, body").animate({ scrollTop: (0, _jquery2.default)(document).height() });
 }
 
-},{"../htmlEscape":2,"../notifications":5,"./variables":4,"jquery":6}],4:[function(require,module,exports){
+},{"../htmlEscape":2,"../notifications":6,"./variables":5,"jquery":7}],5:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -390,7 +420,7 @@ var messageContainer = exports.messageContainer = (0, _jquery2.default)("#messag
 var usernameRegistrationForm = exports.usernameRegistrationForm = (0, _jquery2.default)("form#landing-page-form");
 var urlRegEx = exports.urlRegEx = /(\b(https?|ftp|file|):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 
-},{"jquery":6}],5:[function(require,module,exports){
+},{"jquery":7}],6:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -431,7 +461,7 @@ exports.default = function (title, options) {
    * @returns {boolean}
    */
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /*!
  * jQuery JavaScript Library v2.2.1
  * http://jquery.com/

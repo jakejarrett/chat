@@ -16,6 +16,7 @@
 import $ from "jquery";
 import notifyUser from "./lib/notifications";
 import {app, messageInput, messageContainer, usernameRegistrationForm, landingPage} from "./lib/messaging/variables"
+import {objectSize} from "./lib/messaging/functions"
 import * as messaging from "./lib/messaging";
 
 $(function() {
@@ -183,6 +184,8 @@ $(function() {
         if(registered) {
             /** Reset connected users sidebar. **/
             $("#connected-users").html("");
+
+            $("#connectedUsersAmount").text("Users (" + objectSize(users) + ")");
 
             $.each(users, function (userName, userObject) {
                 $("#connected-users").append("<li>" + userName + "</li>");
