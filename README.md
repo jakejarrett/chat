@@ -14,3 +14,7 @@ $ node index.js
 * Users can send/recieve global messages
 * Notifications (Improvements coming to this too)
 * ES6 :smile_cat:
+
+# Screenshots
+
+![Screenshot](https://i.imgur.com/XhIwzSX.png)
