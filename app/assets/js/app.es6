@@ -164,6 +164,7 @@ $(function() {
             event.preventDefault();
 
             $("#sidebar-wrapper").toggleClass("sidebar-hidden").toggleClass("sidebar-toggle");
+            $("#menu-toggle").toggleClass("active");
             $("#main_icon").toggleClass("fa-chevron-down").toggleClass("fa-chevron-right");
 
             /**

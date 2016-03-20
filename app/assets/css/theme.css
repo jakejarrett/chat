@@ -681,12 +681,29 @@ button.landing-page-margin {
     color: white;
     display: block;
     text-decoration: none;
+    -webkit-transition: background 0.7s;
+    -moz-transition: background 0.7s;
+    -ms-transition: background 0.7s;
+    -o-transition: background 0.7s;
+    transition: background 0.7s;
 }
-.sidebar-nav li a:hover {
+.sidebar-nav li:not(:first-child) a:hover {
     background: rgba(255,255,255,0.25);
     color: white;
     text-decoration: none;
 }
+.sidebar-nav li:first-child a:hover {
+    background: rgba(0, 0, 0, 0.15);
+    -webkit-transition: background 0.7s;
+    -moz-transition: background 0.7s;
+    -ms-transition: background 0.7s;
+    -o-transition: background 0.7s;
+    transition: background 0.7s;
+    color: white;
+    text-decoration: none;
+}
+
+
 .sidebar-nav li a:active, .sidebar-nav li a:focus {
     text-decoration: none;
 }
@@ -704,4 +721,13 @@ button.landing-page-margin {
 
 .push-left {
     margin-right: 60px;
+}
+
+#menu-toggle.active {
+    background: rgba(0, 0, 0, 0.15);
+    -webkit-transition: background 0.7s;
+    -moz-transition: background 0.7s;
+    -ms-transition: background 0.7s;
+    -o-transition: background 0.7s;
+    transition: background 0.7s;
 }

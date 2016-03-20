@@ -179,6 +179,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
             event.preventDefault();
 
             (0, _jquery2.default)("#sidebar-wrapper").toggleClass("sidebar-hidden").toggleClass("sidebar-toggle");
+            (0, _jquery2.default)("#menu-toggle").toggleClass("active");
             (0, _jquery2.default)("#main_icon").toggleClass("fa-chevron-down").toggleClass("fa-chevron-right");
 
             /**
