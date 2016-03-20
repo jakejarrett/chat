@@ -13,7 +13,10 @@
     "type": "git",
     "url": "https://github.com/jakejarrett/chat"
   },
-  "build": "browserify app/assets/js/app.es6 -o app/assets/js/app.js -t [ babelify --presets [ es2015 ] ]",
+  "scripts": {
+    "build": "browserify app/assets/js/app.es6 -o app/assets/js/app.js -t [ babelify --presets [ es2015 ] ]",
+    "start": "node index.js"
+  },
   "devDependencies": {
     "babel-cli": "^6.6.5",
     "babel-core": "^6.7.2",

@@ -157,4 +157,35 @@ $(function() {
             $("#username").focus();
         }
     });
+
+    /** Sidebar toggle **/
+    $("#menu-toggle").click(function(event) {
+        if(registered){
+            event.preventDefault();
+
+            $("#sidebar-wrapper").toggleClass("sidebar-hidden").toggleClass("sidebar-toggle");
+            $("#main_icon").toggleClass("fa-chevron-down").toggleClass("fa-chevron-right");
+
+            /**
+             * No need to grab the data again when it's being closed.
+             */
+            if(!$("#menu-toggle").hasClass("sidebar-hidden")) {
+                socket.emit("requestUsers", sessionStorage.username);
+            }
+        }
+    });
+
+    /**
+     * When someone requests to see connected users, We shall update it.
+     */
+    socket.on("connectedUsers", function(users) {
+        if(registered) {
+            /** Reset connected users sidebar. **/
+            $("#connected-users").html("");
+
+            $.each(users, function (userName, userObject) {
+                $("#connected-users").append("<li>" + userName + "</li>");
+            });
+        }
+    });
 });

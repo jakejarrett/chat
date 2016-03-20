@@ -172,6 +172,37 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
             (0, _jquery2.default)("#username").focus();
         }
     });
+
+    /** Sidebar toggle **/
+    (0, _jquery2.default)("#menu-toggle").click(function (event) {
+        if (registered) {
+            event.preventDefault();
+
+            (0, _jquery2.default)("#sidebar-wrapper").toggleClass("sidebar-hidden").toggleClass("sidebar-toggle");
+            (0, _jquery2.default)("#main_icon").toggleClass("fa-chevron-down").toggleClass("fa-chevron-right");
+
+            /**
+             * No need to grab the data again when it's being closed.
+             */
+            if (!(0, _jquery2.default)("#menu-toggle").hasClass("sidebar-hidden")) {
+                socket.emit("requestUsers", sessionStorage.username);
+            }
+        }
+    });
+
+    /**
+     * When someone requests to see connected users, We shall update it.
+     */
+    socket.on("connectedUsers", function (users) {
+        if (registered) {
+            /** Reset connected users sidebar. **/
+            (0, _jquery2.default)("#connected-users").html("");
+
+            _jquery2.default.each(users, function (userName, userObject) {
+                (0, _jquery2.default)("#connected-users").append("<li>" + userName + "</li>");
+            });
+        }
+    });
 });
 
 },{"./lib/messaging":3,"./lib/messaging/variables":4,"./lib/notifications":5,"jquery":6}],2:[function(require,module,exports){

@@ -33,6 +33,10 @@ io.on("connection", function(socket){
         io.emit("updatechat", msg, username);
     });
 
+    socket.on("requestUsers", function(){
+        io.emit("connectedUsers", usernames);
+    });
+
     /**
      * When a new user joins the chat, Lets store the entered username into sessionStorage and notify the users
      * the user has joined!
@@ -47,6 +51,7 @@ io.on("connection", function(socket){
 
             /** notify chat **/
             io.emit("newUser", "SERVER", socket.username);
+            io.emit("connectedUsers", usernames);
         }
         if(usernames[username]) {
             /** Tell the app to reject registration **/

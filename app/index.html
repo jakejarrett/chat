@@ -4,6 +4,7 @@
         <title>Chat</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         <link href="assets/css/theme.css" rel="stylesheet" />
 
     </head>
@@ -20,6 +21,20 @@
     </div>
 
     <div class="app">
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper" class="sidebar-hidden">
+            <ul class="sidebar-nav">
+                <li>
+                    <a id="menu-toggle" href="#">
+                        Users <div class="pull-right push-left"><i id="main_icon" class="fa fa-chevron-right"></i></div>
+                    </a>
+                </li>
+                <section id="connected-users">
+
+                </section>
+            </ul>
+        </div>
+
         <!-- Content -->
         <div class="col-md-12">
             <!-- Message Container -->
