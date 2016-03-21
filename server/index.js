@@ -68,6 +68,7 @@ io.on("connection", function(socket){
             delete usernames[socket.username];
             // update list of users in chat, client-side
             io.sockets.emit("updateusers", usernames);
+            io.emit("connectedUsers", usernames);
             // echo globally that this client has left
             socket.broadcast.emit("userDisconnect", "SERVER", socket.username);
         }
