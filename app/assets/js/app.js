@@ -158,14 +158,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
      *
      * NOTE- this is only for development purposes right now, will be removed later.
      */
-    (0, _jquery2.default)("html").not(".messages").click(function (event) {
+    (0, _jquery2.default)("html").click(function (event) {
         /**
          * We're checking if they've clicked inside the messages, if they have, We'll return false!
          */
         var directElement = event.target;
         var parentElement = event.target.parentElement;
 
-        if (0 <= parentElement.className.indexOf("messages") || 0 <= directElement.className.indexOf("messages")) {
+        if ("" !== window.getSelection().toString()) {
             return false;
         }
         if (registered) {
